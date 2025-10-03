@@ -15,7 +15,7 @@ It fetches historical stock prices, calculates the **correlation coefficient**, 
 Make sure you have Python installed (>=3.8) and install the required packages:
 
 ```bash
-pip install yfinance pandas matplotlib seaborn<br>
+pip install yfinance pandas matplotlib seaborn
 ```
 ## Run the Project
 
