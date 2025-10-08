@@ -2,47 +2,36 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 
-def fetch_data(tickers, period="5y"):
-    """Fetch historical prices for tickers for given period."""
-    df = yf.download(tickers, period=period)
-    df = df['Close']
-    df = df.dropna()
-    return df
+def fetch_data(tickers, start="2021-10-08", end="2025-10-08"):
+    """Fetch historical closing prices for given tickers between start and end dates."""
+    return yf.download(tickers, start=start, end=end)['Close'].dropna()
 
 def compute_returns(price_df):
-    """Compute daily returns (%) and log returns."""
+    """Compute daily percentage returns and log returns."""
     returns = price_df.pct_change().dropna()
     log_returns = np.log(price_df / price_df.shift(1)).dropna()
     return returns, log_returns
 
 def main():
     tickers = ["MAHSCOOTER.NS", "BAJAJHLDNG.NS"]
+    
+    # Fetch prices
+    prices = fetch_data(tickers)
+    print("=== Prices (head) ===\n", prices.head())
 
-    # Fetch price data
-    price_df = fetch_data(tickers, period="5y")
-    print("=== Prices (head) ===")
-    print(price_df.head())
-
-    # Correlation on raw prices
-    corr_prices = price_df.corr()
-    print("\n=== Correlation of Prices ===")
-    print(corr_prices)
+    # Correlation of prices
+    print("\n=== Correlation of Prices ===\n", prices.corr())
 
     # Compute returns
-    returns, log_returns = compute_returns(price_df)
-    print("\n=== Returns (head) ===")
-    print(returns.head())
+    returns, log_returns = compute_returns(prices)
+    print("\n=== Returns (head) ===\n", returns.head())
 
-    # Correlation of daily returns
-    corr_returns = returns.corr()
-    print("\n=== Correlation of Daily Returns ===")
-    print(corr_returns)
+    # Correlation of returns
+    print("\n=== Correlation of Daily Returns ===\n", returns.corr())
+    print("\n=== Correlation of Log Returns ===\n", log_returns.corr())
 
-    # Correlation of log returns
-    corr_log = log_returns.corr()
-    print("\n=== Correlation of Log Returns ===")
-    print(corr_log)
-    print(f"\nSummary: price corr = {corr_prices.iloc[0,1]:.4f}, returns corr = {corr_returns.iloc[0,1]:.4f}")
+    # Summary
+    print(f"\nSummary: price corr = {prices.corr().iloc[0,1]:.4f}, returns corr = {returns.corr().iloc[0,1]:.4f}")
 
 if __name__ == "__main__":
     main()
