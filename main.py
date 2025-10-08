@@ -42,6 +42,7 @@ def main():
     corr_log = log_returns.corr()
     print("\n=== Correlation of Log Returns ===")
     print(corr_log)
+    print(f"\nSummary: price corr = {corr_prices.iloc[0,1]:.4f}, returns corr = {corr_returns.iloc[0,1]:.4f}")
 
 if __name__ == "__main__":
     main()
